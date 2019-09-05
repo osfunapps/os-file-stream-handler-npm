@@ -40,6 +40,14 @@ const self = module.exports = {
         return JSON.parse(fileStr);
     },
 
+    /**
+     * Will join the path of dirs
+     */
+    joinPath: async function (...paths) {
+        const path = require('path');
+        return path.join(paths)
+    },
+
 
     /**
      * Will save text or, a bunch of lines in an array, into a file
