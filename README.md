@@ -297,7 +297,6 @@ Require fsh:
             resolve(matches)
         })
     },
-};        
 And more...
 
 
