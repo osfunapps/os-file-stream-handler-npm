@@ -23,12 +23,30 @@ const self = module.exports = {
     },
 
     /**
+     * Will append text to a file
+     *
+     * @param filePath -> the path to the file
+     * @param text -> the text to append
+     */
+    appendToFile: function (filePath, text) {
+        return new Promise(function (resolve, reject) {
+            let logStream = fs.createWriteStream(filePath, {flags: 'a'});
+            logStream.write(text);
+
+            logStream.on('close', function() {
+                resolve()
+            });
+            logStream.end();
+        })
+    },
+
+    /**
      * Will read a file with encoding to a string
      *
      * @param filePath -> the path to the file
      * @param encoding -> the desired encoding
      */
-    readFileWithEncoding: function (filePath, encoding='utf8') {
+    readFileWithEncoding: function (filePath, encoding = 'utf8') {
         return fs.readFileSync(filePath, encoding);
     },
 
@@ -41,11 +59,18 @@ const self = module.exports = {
     },
 
     /**
-     * Will join the path of dirs
+     * Will join the paths of dirs
      */
-    joinPath: async function (...paths) {
+    joinPath: function (...paths) {
         const path = require('path');
-        return path.join(paths)
+        return path.join(...paths)
+    },
+
+    /**
+     * Will return the root path of a project
+     */
+    getProjectRoot: function(process) {
+        return process.mainModule.path
     },
 
 
@@ -57,7 +82,7 @@ const self = module.exports = {
      */
     writeFileSync: function (text = null, filePath) {
         const fh = require('os-file-handler');
-        const parentDir = fh.getParentDir(filePath);
+        const parentDir = fh.getParentDirPath(filePath);
         fh.createDir(parentDir);
         fs.writeFileSync(filePath, text);
     },
@@ -148,7 +173,7 @@ const self = module.exports = {
 
             });
             lineReader.on('close', function () {
-                if(!closed) {
+                if (!closed) {
                     closeLineReader(lineReader);
                     resolve(undefined)
                 }
